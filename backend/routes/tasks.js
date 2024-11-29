@@ -58,13 +58,29 @@ router.patch("/:id/toggle-status", async (req, res) => {
             return res.status(404).json({ message: "Task not found" });
         }
 
-        // Toggle the status
-        task.status = task.status === "Pending" ? "Completed" : "Pending";
-        await task.save();
+        // Toggle status and update completedAt field
+        if (task.status === "Pending") {
+            task.status = "Completed";
+            task.completedAt = new Date();
+        } else {
+            task.status = "Pending";
+            task.completedAt = null;
+        }
 
+        await task.save();
         res.json(task);
     } catch (error) {
         res.status(500).json({ message: "Error toggling task status" });
+    }
+});
+
+// Get completed tasks (task history)
+router.get("/history", async (req, res) => {
+    try {
+        const completedTasks = await Task.find({ status: "Completed" }).sort({ completedAt: -1 });
+        res.json(completedTasks);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching task history" });
     }
 });
 

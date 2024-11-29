@@ -38,65 +38,44 @@ const TaskList = () => {
         <div>
             <h2>Task List</h2>
             <FilterBar onFilterChange={fetchTasksAndUsers} />
-            <div className="task-list">
-                <h2>Task List</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Details</th>
-                            <th>Source</th>
-                            <th>Shift Assigned</th>
-                            <th>Status</th>
-                            <th>Priority</th>
-                            <th>Assigned To</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tasks.length > 0 ? (
-                            tasks.map((task) => (
-                                <tr key={task._id}>
-                                    <td>{task.title}</td>
-                                    <td>{task.details}</td>
-                                    <td>{task.source}</td>
-                                    <td>{task.shiftAssigned}</td>
-                                    <td>{task.status}</td>
-                                    <td>{task.priority}</td>
-                                    <td>{task.assignedTo === "Unassigned" ? "Unassigned" : task.assignedTo}</td>
-                                    <td>
-                                        <select
-                                            className="assign-user"
-                                            onChange={(e) => assignUser(task._id, e.target.value)}
-                                            defaultValue=""
-                                        >
-                                            <option value="" disabled>
-                                                Assign User
-                                            </option>
-                                            {users.map((user) => (
-                                                <option key={user._id} value={user.name}>
-                                                    {user.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        <button onClick={() => toggleStatus(task._id)}>
-                                            Mark as {task.status === "Pending" ? "Completed" : "Pending"}
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="6" style={{ textAlign: "center" }}>
-                                    No tasks available
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+            <div className="task-list-cards">
+                {tasks.length > 0 ? (
+                    tasks.map((task) => (
+                        <div key={task._id} className="task-card">
+                            <h3>{task.title}</h3>
+                            <p><strong>Details:</strong> {task.details}</p>
+                            <p><strong>Source:</strong> {task.source}</p>
+                            <p><strong>Shift Assigned:</strong> {task.shiftAssigned}</p>
+                            <p><strong>Status:</strong> {task.status}</p>
+                            <p><strong>Priority:</strong> {task.priority}</p>
+                            <p><strong>Assigned To:</strong> {task.assignedTo === "Unassigned" ? "Unassigned" : task.assignedTo}</p>
+                            <div className="task-actions">
+                                <select
+                                    className="assign-user"
+                                    onChange={(e) => assignUser(task._id, e.target.value)}
+                                    defaultValue=""
+                                >
+                                    <option value="" disabled>
+                                        Assign User
+                                    </option>
+                                    {users.map((user) => (
+                                        <option key={user._id} value={user.name}>
+                                            {user.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button onClick={() => toggleStatus(task._id)}>
+                                    Mark as {task.status === "Pending" ? "Completed" : "Pending"}
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p>No tasks available</p>
+                )}
             </div>
         </div>
     );
 };
 
-export default TaskList
+export default TaskList;
